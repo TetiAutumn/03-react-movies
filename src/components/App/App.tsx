@@ -1,19 +1,20 @@
-
-
 import toast, { Toaster } from "react-hot-toast";
 import SearchBar from "../SearchBar/SearchBar";
 import { MovieGrid } from "../MovieGrid/MovieGrid";
 import "./App.module.css"
 import { movieService } from "../../services/movieService";
-import { useState, useEffect, use } from "react";
+import { useState } from "react";
 import type { Movie } from "../../types/movie";
 import { Loader } from "../Loader/Loader";
+import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
+import { MovieModal } from "../MovieModal/MovieModal";
 
 export default function App() {
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState(false)
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handleSubmitSearch = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,6 +25,7 @@ export default function App() {
 
     try {
       setIsLoading(true);
+      setError(false);
       const query = formData.get('query') as string;
       if (query === '') {
         toast('Please enter your search query');
@@ -40,6 +42,8 @@ export default function App() {
       if (data) {
         setMovies(data.results);
       }
+    } catch {
+      setError(true);
     } finally {
       setIsLoading(false);
     }
@@ -48,25 +52,30 @@ export default function App() {
     form.reset();
   }
 
-  useEffect(() => {
-    console.log('movies', movies);
-    console.log('isLocading', isLoading);
-
-  }, [movies, isLoading]);
 
   return (
     <>
       <SearchBar onSubmit={handleSubmitSearch} />
       <Toaster />
-      {isLoading && <Loader />}
-      {!isLoading && movies.length > 0 && (
-        <MovieGrid
-          movies={movies}
-          onSelect={(movie) => console.log("Selected:", movie)}
-        />)
-      }
 
+      {isLoading && <Loader />}
+
+      {error ? (
+        <ErrorMessage />)
+        : (
+          !isLoading && movies.length > 0 && (
+            <MovieGrid
+              movies={movies}
+              onSelect={(movie) => setSelectedMovie(movie)}
+            />
+          )
+        )}
+        {selectedMovie && (
+      <MovieModal
+        movie={selectedMovie}
+        onClose={() => setSelectedMovie(null)}
+      />
+    )}
     </>
   );
-
 }
