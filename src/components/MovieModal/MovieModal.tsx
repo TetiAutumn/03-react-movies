@@ -1,9 +1,14 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import css from "./MovieModal.module.css";
+import type {Movie} from "../../types/movie"
 
-export function MovieModal({ movie, onClose }) {
-  // Закриття по ESC
+interface MovieModalProps {
+  movie: Movie;
+  onClose: () => void;
+}
+
+ export function MovieModal({ movie, onClose }: MovieModalProps) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
