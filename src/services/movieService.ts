@@ -20,9 +20,10 @@ export const movieService = async (query: string) => {
         }
         );
 
-        return response.data;
+        return response.data.results;
     } catch (e) {
         console.log(e);
+        return[];
     }
 
 }

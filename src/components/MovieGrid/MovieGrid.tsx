@@ -13,12 +13,15 @@ export const MovieGrid: React.FC<MovieGridProps> = ({ movies, onSelect }) => {
         <ul className={css.grid}>
             {/* Набір елементів списку з фільмами */}
             {movies.map((movie) => (
-                <li onClick={()=>onSelect(movie)}>
+               
+                <li 
+                 key={movie.id}
+                onClick={()=>onSelect(movie)}>
                     <div className={css.card}>
                         <img
                             className={css.image}
                             src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                            alt="movie title"
+                            alt="movie.title"
                             loading="lazy"
                         />
                         <h2 className={css.title}>{movie.title}</h2>

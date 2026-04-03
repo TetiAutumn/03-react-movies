@@ -16,46 +16,31 @@ export default function App() {
   const [error, setError] = useState(false)
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  const handleSubmitSearch = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-
-    const formData = new FormData(form);
-
+ const handleSearch = async (query: string) => {
     try {
       setIsLoading(true);
       setError(false);
-      const query = formData.get('query') as string;
-      if (query === '') {
-        toast('Please enter your search query');
-        return;
-      }
-      const data = await movieService(query);
 
-      if (data?.total_results === 0) {
-        toast('No movies found for your request.');
+      const movies = await movieService(query);
+
+      if (movies.length === 0) {
+        toast("No movies found for your request.");
         setMovies([]);
         return;
       }
 
-      if (data) {
-        setMovies(data.results);
-      }
+      setMovies(movies);
     } catch {
       setError(true);
     } finally {
       setIsLoading(false);
     }
-
-
-    form.reset();
-  }
+  };
 
 
   return (
     <>
-      <SearchBar onSubmit={handleSubmitSearch} />
+      <SearchBar onSubmit={handleSearch} />
       <Toaster />
 
       {isLoading && <Loader />}
