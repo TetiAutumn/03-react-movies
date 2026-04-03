@@ -1,16 +1,16 @@
 import axios from "axios";
 import type { Movie } from "../types/movie";
 
-interface movieServiceResponse {
+interface MovieServiceResponse {
     page: number;
     results: Movie[];
     total_pages: number;
     total_results: number;
 }
 
-export const movieService = async (query: string) => {
+export const movieService = async (query: string): Promise<Movie[]> => {
     try {
-        const response = await axios.get<movieServiceResponse>(`https://api.themoviedb.org/3/search/movie?query=${query}`, {
+        const response = await axios.get<MovieServiceResponse>(`https://api.themoviedb.org/3/search/movie?query=${query}`, {
             params: {
                 // твої параметри
             },
